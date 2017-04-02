@@ -102,6 +102,8 @@ found = module_loader is not None
 if not found:
     ProgramError("Module matplotlib is required")
     ProgramAbort()
+import matplotlib as mpl
+mpl.use("Agg")
 import matplotlib.pyplot as plt
 
 
@@ -175,7 +177,7 @@ def extractExcitations(filename):
                 # print("Gibbs free energy: {}".format(gibbsfree))
         f.close()
     # Read through ORCA file, read *last* set of cartesian coordinates
-    elif program == "orca":
+    if program == "orca":
         f = open(filename, 'r')
         for line in f:
             if line.find(" ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS") != -1:
@@ -193,6 +195,18 @@ def extractExcitations(filename):
             readBuffer = i.split()
             bands.append(float(readBuffer[2]))
             oscstr.append(float(readBuffer[3]))
+        f.close()
+        # Read ECD data from ORCA file
+        f = open(filename)
+        for line in f:
+            if line.strip() == 'CD SPECTRUM':
+                del excit[:]
+                for _ in range(5):
+                    line = next(f)
+                while line.strip():
+                    tokens = line.split()
+                    ecdstr.append(float(tokens[3]))
+                    line = next(f)
         f.close()
     # Read through ORCA file, read *last* Gibbs free energy
     if program == "orca":
@@ -651,8 +665,8 @@ if __name__ == '__main__':
 
     if args.outfile != None and ecd_sigstruct >= 1:
         plt.savefig("ECD-" + args.outfile, bbox_inches='tight')
-    elif args.outfile == None:
-        plt.show()
+    # elif args.outfile == None:
+    #     plt.show()
 
     if args.verbosity >= 2:
         ProgramFooter()
