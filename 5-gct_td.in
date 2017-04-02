@@ -1,0 +1,8 @@
+! rks pbe def2-svp
+
+%tddft
+ nroots 24
+ tda false
+ end
+
+* xyzfile 0 1 5-gct_opt.xyz *

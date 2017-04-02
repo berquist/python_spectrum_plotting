@@ -1,3 +1,17 @@
+## ORCA
+*.cis
+*.engrad
+*.gbw
+*.hess
+*.inp
+*.opt
+*.prop
+*.tmp*
+*.trj
+*_property.txt
+
+## Python
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
